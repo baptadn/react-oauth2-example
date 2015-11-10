@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "build": "webpack --progress --profile --colors",
-    "watch": "webpack-dev-server --hot --inline --progress --colors --history-api-fallback --port 3244"
+    "watch": "webpack-dev-server --hot --inline --progress --colors --history-api-fallback"
   },
   "author": "shinework",
   "license": "MIT",
