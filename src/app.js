@@ -3,12 +3,13 @@
 import React from 'react';
 import Alt from 'alt';
 import ReactDOM  from 'react-dom';
+import Router from 'react-router';
+import axios from 'axios';
+import history from './history';
+
 import routes from './routes';
-import { Router, Route, Link } from 'react-router';
 import AuthActions from './actions/AuthActions';
 import AuthStore from './stores/AuthStore';
-import history from './history';
-import axios from 'axios';
 
 // Try to connect user from local storage value
 AuthActions.localLogin();
@@ -17,17 +18,15 @@ AuthActions.localLogin();
 axios.interceptors.response.use(response => {
   return response;
 }, error => {
-  var deferred = Promise.defer();
-
-  if (error.status === 401 && error.data.error_description === 'The access token provided has expired.') {
-    AuthActions.refreshToken({initialRequest: error.config, deferred: deferred});
-  } else if (error.status === 401 && error.statusText === 'Unauthorized') {
-    AuthActions.logout();
-  } else {
-    deferred.reject(error);
-  }
-
-  return deferred.promise;
+  return new Promise((resolve, reject) => {
+    if (error.status === 401 && error.data.error_description === 'The access token provided has expired.') {
+      AuthActions.refreshToken({initialRequest: error.config, resolve: resolve, reject: reject});
+    } else if (error.status === 401 && error.statusText === 'Unauthorized') {
+      AuthActions.logout();
+    } else {
+      reject(error);
+    }
+  });
 });
 
 ReactDOM.render(

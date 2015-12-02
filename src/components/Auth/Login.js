@@ -4,8 +4,7 @@ import AuthStore from './../../stores/AuthStore';
 import AuthActions from './../../actions/AuthActions';
 import connectToStores from 'alt/utils/connectToStores';
 
-@connectToStores
-export default class Login extends Component {
+class Login extends Component {
   static getStores() {
     return [AuthStore];
   }
@@ -35,3 +34,5 @@ export default class Login extends Component {
     );
   }
 }
+
+export default connectToStores(Login);

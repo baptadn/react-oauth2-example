@@ -33,7 +33,6 @@ class AuthStore {
         this.loginSuccess(response.data.user);
       })
       .catch(response => {
-        console.log(response);
         this.loginError(response);
       });
   }
@@ -43,7 +42,8 @@ class AuthStore {
    * @param user
    */
   loginSuccess(user) {
-    localStorage.setItem('user', user);
+    localStorage.setItem('user', JSON.stringify(user));
+
     this.setState({ user: user });
     history.replaceState(null, '/');
   }
@@ -62,7 +62,7 @@ class AuthStore {
   onLocalLogin() {
     let accessToken = localStorage.getItem('access_token');
     let refreshToken = localStorage.getItem('refresh_token');
-    let user = localStorage.getItem('user');
+    let user = JSON.parse(localStorage.getItem('user'));
 
     if (accessToken && refreshToken && user) {
       this.saveTokens({access_token: accessToken, refresh_token: refreshToken});
@@ -85,9 +85,9 @@ class AuthStore {
 
           // Replay request
           axios(params.initialRequest).then(response => {
-            params.deferred.resolve(response);
+            params.resolve(response);
           }).catch(response => {
-            params.deferred.reject(response);
+            params.reject(response);
           });
         })
         .catch(() => {
